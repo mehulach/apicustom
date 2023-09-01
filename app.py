@@ -43,7 +43,48 @@ def cosine_similarity():
 
     # Calculate cosine similarity for each vector
     # Return the index of the most similar vector
+
+
     most_similar_index = max(range(len(vectors)), key=lambda index: 1 - distance.cosine(query_vector, vectors[index]))
 
     return jsonify({'most_similar_text': texts[most_similar_index]})
+#START code for get_datetime api
 
+from flask import Flask, jsonify
+from datetime import datetime
+import pytz
+
+app = Flask(__name__)
+
+@app.route('/get_datetime')
+def get_datetime():
+    # Get current UTC time
+    utc_time = datetime.now(pytz.utc)
+    
+    # Convert UTC time to IST, GMT, and CET timezones
+    ist_timezone = pytz.timezone('Asia/Kolkata')
+    gmt_timezone = pytz.timezone('GMT')
+    cet_timezone = pytz.timezone('CET')
+    
+    ist_time = utc_time.astimezone(ist_timezone)
+    gmt_time = utc_time.astimezone(gmt_timezone)
+    cet_time = utc_time.astimezone(cet_timezone)
+    
+    # Format the times
+    ist_formatted = ist_time.strftime('%d/%m/%Y %H:%M:%S IST')
+    gmt_formatted = gmt_time.strftime('%d/%m/%Y %H:%M:%S GMT')
+    cet_formatted = cet_time.strftime('%d/%m/%Y %H:%M:%S CET')
+    
+    # Create a dictionary with the times and labels
+    times = {
+        'IST': ist_formatted,
+        'GMT': gmt_formatted,
+        'CET': cet_formatted
+    }
+    
+    return jsonify(times)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+#END of code for get_datetime api
